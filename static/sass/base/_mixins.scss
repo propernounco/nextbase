@@ -1,22 +1,12 @@
 // ==========================================================================
 // Base – Mixins
 // ==========================================================================
+@function strip-unit($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+    @return $number / ($number * 0 + 1);
+  }
 
-// Breakpoint sizes
-// Example usage @include breakpoint(x) { ... }; - where x is the device
-@mixin breakpoint($bp) {
-   @if $bp == xxl {
-    @media only screen and (min-width: $breakpoint-xxl) { @content ; }
-  }
-  @if $bp == xl {
-    @media only screen and (min-width: $breakpoint-xl) { @content ; }
-  }
-  @else if $bp == l {
-    @media only screen and (min-width: $breakpoint-l) { @content ; }
-  }
-  @else if $bp == m {
-    @media only screen and (min-width: $breakpoint-m) { @content ; }
-  }
+  @return $number;
 }
 
 @mixin fancy_scroller() {
@@ -60,7 +50,6 @@
 @mixin fancy_scroller_small() {
   &::-webkit-scrollbar {
     width: 6px;
-    margin-top:12px;
     height:3px;  
   }
 
@@ -74,22 +63,78 @@
   }
 }
 
-// Font sizes (primary sizing in `rem` units with a fallback of `px`)
-// Example usage @include font-size(18);
-@mixin font-size ($size) {
-  $remValue: $size / 16;
-  $pxValue: ($size);
-  font-size: $pxValue + px; 
-  font-size: $remValue + rem;
+// Breakpoint sizes
+// Example usage @include breakpoint(x) { ... }; - where x is the device
+@mixin breakpoint($bp) {
+  @if $bp == xxl {
+    @media only screen and (min-width: $breakpoint-xxl) { @content ; }
+  }
+  @if $bp == xl {
+    @media only screen and (min-width: $breakpoint-xl) { @content ; }
+  }
+  @else if $bp == l {
+    @media only screen and (min-width: $breakpoint-l) { @content ; }
+  }
+  @else if $bp == m {
+    @media only screen and (min-width: $breakpoint-m) { @content ; }
+  }
+  @else if $bp == dz {
+    @media only screen and (min-width: $breakpoint-dz) { @content ; }
+  }
+  @else if $bp == s {
+    @media only screen and (min-width: $breakpoint-s) { @content ; }
+  }
+  @else if $bp == xs {
+    @media only screen and (min-width: $breakpoint-xs) { @content ; }
+  }
+  @else if $bp == mobile {
+    @media (min-width: $breakpoint-mobile) { @content ; }
+  }
+  @else if $bp == mobile-s {
+    @media (min-width: $breakpoint-mobile-s) { @content ; }
+  }
 }
 
-// Line height sizes (primary sizing in `rem` units with a fallback of `px`)
-// Example usage @include line-height(22);
-@mixin line-height ($size) {
-  $remValue: $size / 16;
-  $pxValue: ($size);
-  line-height: $pxValue + px; 
-  line-height: $remValue + rem;
+@mixin max-breakpoint($bp) {
+  @if $bp == xxl {
+    @media only screen and (max-width: $breakpoint-xxl) { @content ; }
+  }
+  @if $bp == xl {
+    @media only screen and (max-width: $breakpoint-xl) { @content ; }
+  }
+  @else if $bp == l {
+    @media only screen and (max-width: $breakpoint-l) { @content ; }
+  }
+  @else if $bp == m {
+    @media only screen and (max-width: $breakpoint-m) { @content ; }
+  }
+  @else if $bp == dz {
+    @media only screen and (max-width: $breakpoint-dz) { @content ; }
+  }
+  @else if $bp == s {
+    @media only screen and (max-width: $breakpoint-s) { @content ; }
+  }
+  @else if $bp == xs {
+    @media only screen and (max-width: $breakpoint-xs) { @content ; }
+  }
+  @else if $bp == mobile {
+    @media (max-width: $breakpoint-mobile) { @content ; }
+  }
+  @else if $bp == mobile-s {
+    @media (max-width: $breakpoint-mobile-s) { @content ; }
+  }
+}
+
+@mixin font-size($sizeValue: 1.6) {
+  font-size: ($sizeValue * 10) + px;
+  font-size: $sizeValue + rem;
+  line-height: ($sizeValue + .8) + rem;
+}
+
+@mixin minmax ($size) {
+  min-width: $size;
+  max-width: $size;
+  width:$size;
 }
 
 // Background Color with Opacity

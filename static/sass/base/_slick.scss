@@ -125,7 +125,7 @@
 
     position: absolute;
     top: 50%;
-
+    z-index: 999;
     display: block;
 
     width: 20px;
@@ -180,48 +180,50 @@
 
 .slick-prev
 {
-    left: -56px;
+    left: 0;
     // border:1px solid #e0e0e0;
     padding:0px;
-    width:50px;
-    height:50px;
+    width:48px;
+    height:48px;
     &:hover{
-        // background:$base_color;
+        background:darken($base_gray, 2);        
+        border-radius:2px;   
         &:before{
-            content:url('../images/icons/left-arrow-light.svg');            
+            content:url('../images/svg/chevron-left.svg');            
         }
     }
 }
 [dir='rtl'] .slick-prev
 {
-    right: -25px;
+    right: 0px;
     left: auto;
 }
 .slick-prev:before
 {
     // content: '←';
-    content:url('../images/icons/left-arrow.svg');
+    content:url('../images/svg/chevron-left.svg');
     
 }
 
 [dir='rtl'] .slick-prev:before
 {
     // content: '→';
-    content:url('../images/icons/right-arrow.svg');
+    content:url('../images/svg/chevron-right.svg');
     
 }
 
 .slick-next
 {
-    right: -56px;
+    right: 0px;
     // border:1px solid #e0e0e0;
     padding:0px;
-    width:50px;
-    height:50px;
+    width:48px;
+    height:48px;
     &:hover{
-        // background:$base_color;
+        background:darken($base_gray, 2);        
+        border-radius:2px;
         &:before{
-            content:url('../images/icons/right-arrow-light.svg');            
+            content:url('../images/svg/chevron-right.svg');            
         }
     }
 }
@@ -232,12 +234,12 @@
 }
 .slick-next:before
 {
-    content:url('../images/icons/right-arrow.svg');
+    content:url('../images/svg/chevron-right.svg');
     
 }
 [dir='rtl'] .slick-next:before
 {
-    content:url('../images/icons/left-arrow.svg');
+    content:url('../images/svg/chevron-left.svg');
     
 }
 
@@ -249,14 +251,12 @@
 
 .slick-dots
 {
-    position: absolute;
-    bottom: -40px;
-
+    position: relative;
+    bottom: 0;
     display: block;
-
     width: 100%;
     padding: 0;
-    margin: 0;
+    margin: 30px 0 0 0;
 
     list-style: none;
 
@@ -330,4 +330,17 @@
     opacity: 1;
     color: $base_color;
 
+}
+
+
+.testimonials-block{
+    .testimonial{
+        // .text{
+        //     max-height:250px;
+        //     overflow:hidden;
+        //     &.overflow-hidden{
+
+        //     }
+        // }
+    }
 }

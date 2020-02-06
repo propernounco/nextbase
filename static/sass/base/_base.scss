@@ -1,24 +1,14 @@
-@import "components/normalize";
-
 @import "variables";
-@import "icons";
-
+@import "fonts";
 @import "mixins";
-@import "resets";
-
-// @import "slick";
+@import "helpers";
+@import "animations";
+@import "grid";	
+@import "lists";	
 @import "modal";
-
 @import "typography";
-@import "lists";
-@import "tables";
 @import "forms";
 @import "buttons";
-
-@import "grid";
-@import "sections";
-@import "animations";
-
-@import "helpers";	
-
-//@import 'sizing';
+@import "slick";
+@import "global";
+@import "ancientFb";

@@ -25,10 +25,6 @@ const robotsOptions = {
   }
 };
 
-// const jsonParser = bodyParser.json();
-
-const resourceFolder = './static/pdfs/';
-
 const find = require('find');
 
 // const formidableMiddleware = require('express-formidable');
@@ -86,11 +82,6 @@ app
       res.status(200).sendFile('sitemap.xml', sitemapOptions)
     ));
   
-    server.get('/tools/custom-post-type-generator', (req, res) => {
-        res.redirect(301, 'https://cpt-generator.propernoun.co')
-        return;
-    })
-
     server.get('/_next/*', (req, res) => {
         /* serving _next static content using next.js handler */
         handle(req, res);
@@ -109,71 +100,17 @@ app
 
     })
 
-	  server.get('/articles/:slug', (req, res) => {
-
-      // if(!isNaN(req.params.slug)){
-      //   // return 'doodoo';
-      //   const actualPage = '/articles'
-      //   const queryParams = { title: 'Articles' }
-      //   //app.render(req, res, actualPage, queryParams)
-      //   return renderAndCache(req, res, actualPage, queryParams)
-      // }
-      // else{
-        const actualPage = '/single-article'
-        const queryParams = { title: req.params.slug }
-        // app.render(req, res, actualPage, queryParams)
-        return renderAndCache(req, res, actualPage, queryParams)
-      //}
-      
-    })
-
-    server.get('/services/:slug', (req, res) => {
-      const actualPage = '/single-service'
-      const queryParams = { title: req.params.slug }
-      // app.render(req, res, actualPage, queryParams)      
-      return renderAndCache(req, res, actualPage, queryParams)
-    })
-
-    server.get('/case-studies/:slug', (req, res) => {
-      const actualPage = '/single-case-study'
-      const queryParams = { title: req.params.slug }
-      app.render(req, res, actualPage, queryParams)    
-      // return renderAndCache(req, res, actualPage, queryParams)  
-    })
-
-    server.get('/portfolio/:slug', (req, res) => {
-      const actualPage = '/single-portfolio'
-      const queryParams = { title: req.params.slug }
-      //app.render(req, res, actualPage, queryParams)    
-      return renderAndCache(req, res, actualPage, queryParams)  
-    })
-
-    server.get('/web/:slug', (req, res) => {
-      const actualPage = '/web-services-lander'
-      const queryParams = { title: req.params.slug }
-      //app.render(req, res, actualPage, queryParams)    
-      return renderAndCache(req, res, actualPage, queryParams)  
-    })
-
-    server.get('/seo/:slug', (req, res) => {
-      const actualPage = '/seo-services-lander'
-      const queryParams = { title: req.params.slug }
-      //app.render(req, res, actualPage, queryParams)    
-      return renderAndCache(req, res, actualPage, queryParams)  
-    })
-  
-    server.get('/marketing/:slug', (req, res) => {
-      const actualPage = '/marketing-services-lander'
-      const queryParams = { title: req.params.slug }
-      //app.render(req, res, actualPage, queryParams)    
-      return renderAndCache(req, res, actualPage, queryParams)  
-    })
-
-    
+    //dynamic path example
+    // server.get('/services/:slug', (req, res) => {
+    //   const actualPage = '/single-service'
+    //   const queryParams = { title: req.params.slug }
+    //   // app.render(req, res, actualPage, queryParams)      
+    //   return renderAndCache(req, res, actualPage, queryParams)
+    // })
 
     server.get('*', (req, res) => {
         /* serving page */        
-
+        //If page shouldn't be cached run it here
         if(req.params[0] == '/articles' || req.params[0] == '/seo-campaign-packages'){
           console.log('yee')
           return handle(req, res)        
@@ -185,41 +122,27 @@ app
         
     });
   
-    // server.get('*', (req, res) => {    	
-    //   	return handle(req, res)
-    // })
-
-    // server.get('/_next/*', (req, res) => {
-    //      // serving _next static content using next.js handler 
-    //     handle(req, res);
-    // });
-
-    // server.get('*', (req, res) => {
-    //      serving page 
-    //     return renderAndCache(req, res)
-    // });
-
-
-    server.post('/api/submit-contact-form', upload.none(), (req, res) => {
-        // console.log(res.body)        
-        request.post('http://cms.propernoun.co/wp-json/proper/v1/test-form-entry', {form: req.body }, function(err, httpResponse, body){
-          if(err){
-            console.log(err)
-            return res.send(JSON.stringify(err));
-          }
-          else{
-            if(parseInt(body) == 1){
-              console.log('succcesss')
-              return res.send(JSON.stringify(body));
-            }
-            else{
-              console.log('something else')
-              return res.send(JSON.stringify(err));
-            }
-          }
-        })
+    //API Example
+    // server.post('/api/submit-contact-form', upload.none(), (req, res) => {
+    //     // console.log(res.body)        
+    //     request.post('http://cms.propernoun.co/wp-json/proper/v1/test-form-entry', {form: req.body }, function(err, httpResponse, body){
+    //       if(err){
+    //         console.log(err)
+    //         return res.send(JSON.stringify(err));
+    //       }
+    //       else{
+    //         if(parseInt(body) == 1){
+    //           console.log('succcesss')
+    //           return res.send(JSON.stringify(body));
+    //         }
+    //         else{
+    //           console.log('something else')
+    //           return res.send(JSON.stringify(err));
+    //         }
+    //       }
+    //     })
         
-    })
+    // })
 
     server.listen(3000, err => {
       if (err) throw err
