@@ -1,40 +1,25 @@
 import React from 'react'
+import Link from 'next/link';
+import { useEffect } from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import Router from 'next/router'
 import Header from '../partials/header.js'
 import Footer from '../partials/footer.js'
-import FooterSchema from '../partials/footer-schema.js'
-import NavOverlay from '../partials/nav-overlay.js'
 import fetch from 'isomorphic-unfetch'
 
 
-export default class ProperSite extends Document {
+
+export default class TciiApp extends Document {
 
   static async getInitialProps (ctx){
     const initialProps = await Document.getInitialProps(ctx)
-    let show_white = ['/portfolio', '/services', '/contact', '/agency-services', '/portfolio', '/articles', '/seo-services' ]
-    let cur_path = ctx.asPath;
-    // let cur_path = ctx.req.headers.referer;
-    initialProps.headerWhite = '';
-    show_white.map(pagePath => {
-      if(cur_path.indexOf(pagePath) > -1 ){
-        if(cur_path.split(/\/(?=.)/).length > 2 && cur_path.indexOf('articles') > -1){
-          
-        }
-        else{
-          initialProps.headerWhite = 'white';
-        }
-    }
-    // if(cur_path == pagePath){
-    //   initialProps.headerWhite = 'white';
-    // }
-    })
-    return initialProps
+    let cur_path = ctx.asPath;        
+    return initialProps        
   }
-  
-  render () {
 
-  
+  render () {
+    
+
   return (
   <html lang="en">
     <Head>
@@ -43,34 +28,59 @@ export default class ProperSite extends Document {
       <link rel="icon" sizes="192x192" href="/static/touch-icon.png" />
       <link rel="apple-touch-icon" href="/static/touch-icon.png" />
       <link rel="mask-icon" href="/static/favicon-mask.svg" color="#49B882" />
+      <link href="https://fonts.googleapis.com/css?family=Red+Hat+Display:400,500,700,900&display=swap" rel="stylesheet" />
       <link rel="icon" href="/static/favicon.ico" />
-      <link href="/static/css/proper-styles.css" rel="stylesheet" />
+      <link href="/static/css/tciiapp-styles.css" rel="stylesheet" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />        
     </Head>
     <body>
-      <div className="root">
-        
-        <header className={`header opaque fade-in animation-long ${this.props.headerWhite}`}>
-          <Header />
-            <div id="header-trigger"></div>
-            
-            <NavOverlay />
-              
-            </header>
-            
-            <Main />
-              <NextScript />
-              
-              <Footer />
-              </div>
-              
-              <script defer async src="/static/dist/js/proper-js.dist.js"></script>
-                            
-              <FooterSchema />
-                <link rel="stylesheet" href="https://use.typekit.net/nzr0liz.css" />
-              </body>
-            </html>
+      <div className="root">        
+        <header className="header">
+            <Header />           
+            <div className="nav-menu">
+              <ul>
+                <li>
+                  <Link href="/property-owners">
+                    <a>Property Owners</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/properties">
+                    <a>Properties</a>
+                  </Link>                  
+                </li>
+                <li>
+                  <Link href="/property-inspections">
+                  <a>Inspections</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/all-work-orders">
+                  <a>Work Orders</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/property-media">
+                  <a>Property Media</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/reports">
+                    <a>Reports</a>
+                  </Link>
+                </li>                
+              </ul>
+            </div>            
+        </header>            
+        <Main />
+        <NextScript />
+        <Footer />
+      </div>              
+                  
+      <script defer src="/static/dist/js/tciiapp-js.dist.js"></script>
+    </body>
+  </html>
       )
     }
 }

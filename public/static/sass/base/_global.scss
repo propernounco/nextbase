@@ -1,0 +1,24 @@
+html, body{
+	background:$base_gray;
+	margin:0;
+	padding:0;
+	font-size: 62.5%;
+	font-family:$body_font;
+	// font-size:14px;
+	letter-spacing:.5px;
+	@include max-breakpoint('s'){
+		font-size:58%;
+	}
+	@include max-breakpoint('xs'){
+		font-size:54%;
+	}
+	@include max-breakpoint('mobile'){
+		font-size:50%;
+	}
+	body{
+		font-size:14px;
+		max-width:100%;
+		width: 100%;
+		overflow-x:hidden; 
+	}
+}

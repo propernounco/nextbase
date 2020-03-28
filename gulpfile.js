@@ -59,49 +59,45 @@ gulp.task('build', ['clean'], function() {
 gulp.task('styles', function() {
     return gulp.src([
             // './assets/sass/lontv-styles.scss'
-            './assets/sass/*.scss'
+            './public/static/sass/*.scss'
         ])
         .pipe(sourcemaps.init())
         .pipe(compass({
-            config_file: './assets/sass/config.rb',
-            css: './assets/css',
-            sass: './assets/sass'
+            config_file: './public/static/sass/config.rb',
+            css: './public/static/css',
+            sass: './public/static/sass'
         }))
         .pipe(autoprefixer(AUTOPREFIXER_BROWSERS))
         .pipe(cleanCSS({compatibility: 'ie8'}))
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest('./assets/css/'))
+        .pipe(gulp.dest('./public/static/css/'))
         .pipe(browserSync.reload({stream:true}));
 });
 
-// Scripts task
+
 gulp.task('scripts', function() {
-    return gulp.src([            
-            './assets/vendors/jquery/jquery.1.11.3.min.js',                        
-            './assets/js/util-scripts.js', 
-            './assets/vendors/izmodal/js/izmodal.min.js', 
-            './assets/vendors/feather-icons/dist/feather.min.js',                        
-            './assets/vendors/waypoints/lib/jquery.waypoints.js',                        
-            './assets/vendors/slick/slick.js',                   
-            './assets/js/sfl-js.js'                            
+    return gulp.src([
+            // './node_modules/micromodal/dist/micromodal.min.js',    
+            './public/static/vendors/micromodal/dist/micromodal.js',
+            './public/static/js/tciiapp-js.js'                            
         ])
-        // .pipe(sourcemaps.init())
-        .pipe(concat('slf-js.dist.js'))
-        .pipe(uglify())
+        
+        .pipe(concat('tciiapp-js.dist.js'))
+        // .pipe(uglify())
         // .pipe(sourcemaps.write())
-        .pipe(gulp.dest('./assets/dist/js/'))
+        .pipe(gulp.dest('./public/static/dist/js/'))
         .pipe(browserSync.reload({stream:true}));
 });
 
 //Images
 gulp.task('images', function() {
-    return gulp.src('./assets/images/*')
+    return gulp.src('./public/static/images/*/*')
         .pipe(imagemin({
             progressive: true,
             svgoPlugins: [{removeViewBox: false}],
             use: [pngquant()]
         }))
-        .pipe(gulp.dest('./assets/dist/images/'));
+        .pipe(gulp.dest('./public/static/dist/images/'));
 });
 
 // ============================================================================
@@ -115,9 +111,9 @@ gulp.task('images', function() {
  */
 gulp.task('clean', function() {
     del([
-        './assets/css/*.css',
-		'!./assets/css/font-awesome.min.css',
-        './assets/js/*.dist.js'
+        './public/static/css/*.css',
+        '!./public/static/css/font-awesome.min.css',
+        './public/static/js/*.dist.js'
     ]);
 });
 
@@ -132,9 +128,9 @@ gulp.task('clean', function() {
  *
  * @since 0.1.0
  */
-gulp.task('watch', function() {    
-    gulp.watch('./assets/sass/**/*.scss', ['styles']);
-    gulp.watch('./assets/js/*.js', ['scripts']);
-    gulp.watch('./assets/images/*', ['images']);
+gulp.task('watch', function() {
+    gulp.watch('./public/static/sass/**/*.scss', ['styles']);    
+    gulp.watch('./public/static/js/*.js', ['scripts']);
+    gulp.watch('./public/static/images/*', ['images']);
     gulp.watch("*.html", ['bs-reload']);
 });

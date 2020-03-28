@@ -92,37 +92,114 @@ app
         handle(req, res);
     });
 
-    server.get('/show-resources', (req, res) => {
-    
-      let files = find.file(resourceFolder, function(files) {
-                     return res.send(JSON.stringify(files));
-                  })        
-
+   
+    //dynamic path example
+    server.get('/owners/:slug', (req, res) => {
+      const templatePage = '/single-property-owner'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
     })
 
-    //dynamic path example
-    // server.get('/services/:slug', (req, res) => {
-    //   const actualPage = '/single-service'
-    //   const queryParams = { title: req.params.slug }
-    //   // app.render(req, res, actualPage, queryParams)      
-    //   return renderAndCache(req, res, actualPage, queryParams)
-    // })
+    server.get('/entity/:slug', (req, res) => {
+      const templatePage = '/single-entity'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('/units/:id', (req, res) => {
+      const templatePage = '/property-units'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('/unit/:slug', (req, res) => {
+      const templatePage = '/single-unit'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('/properties/:slug', (req, res) => {
+      const templatePage = '/properties'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('/property/:slug', (req, res) => {
+      const templatePage = '/single-property'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('/property/:slug/details', (req, res) => {
+      const templatePage = '/single-property-information'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('/inspections/:id', (req, res) => {
+      const templatePage = '/property-inspections'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('/inspection/:slug', (req, res) => {
+      const templatePage = '/single-inspection'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('/inspection/:slug/questions', (req, res) => {
+      const templatePage = '/single-inspection-list'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+  
+    server.get('/work-orders/:id', (req, res) => {
+      const templatePage = '/single-property-work-orders'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('/work-orders/:slug/details', (req, res) => {
+      const templatePage = '/single-work-order'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('/property-media/:id', (req, res) => {
+      const templatePage = '/property-media'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
 
     server.get('*', (req, res) => {
         /* serving page */        
         //If page shouldn't be cached run it here
-        if(req.params[0] == '/articles' || req.params[0] == '/seo-campaign-packages'){
-          console.log('yee')
+        if(req.params[0] == '/articles' || req.params[0] == '/seo-campaign-packages'){          
           return handle(req, res)        
         }
         else{
-          return renderAndCache(req, res)
+          // return renderAndCache(req, res)
+          return handle(req, res)        
         }
 
         
     });
   
-    //API Example
+    //API Post Example
     // server.post('/api/submit-contact-form', upload.none(), (req, res) => {
     //     // console.log(res.body)        
     //     request.post('http://cms.propernoun.co/wp-json/proper/v1/test-form-entry', {form: req.body }, function(err, httpResponse, body){
@@ -180,10 +257,8 @@ async function renderAndCache(req, res, actualPage = req.path, queryParams = req
             res.send(html);
             return
         }
-
         // Let's cache this page
         ssrCache.set(key, html);
-
         res.setHeader('x-cache', 'MISS');
         res.send(html)
     } catch (err) {

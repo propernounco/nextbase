@@ -42,25 +42,39 @@ class ApiExample extends React.Component {
 			base = page - 1;
 		}
 
-		const service = await fetch(getConfig.serverRuntimeConfig.api_base + '/api_path')
-	    const serviceError = service.statusCode > 200 ? service.statusCode : false;
-	    const serviceData = await service.json(); 
+		const service = await fetch(getConfig.serverRuntimeConfig.api_base + '/api_path' + ctx.req.params.slug)	   
+	    const errorCode = res.statusCode > 200 ? res.statusCode : false;
+	    const data = await res.json(); 
 
-		if(serviceData.data && parseFloat(serviceData.data.status) == 400){
-			ctx.res.statusCode = 404
-			ctx.res.end('Not Found')
-			return;
-		}
-			
-		if(serviceData.length <= 0){
+
+		let meta_title;
+	    let meta_desc;	
+
+		let url = 'https://' + ctx.req.headers.host + '/articles/' + ctx.req.params.slug
+
+		if(data.length <= 0){
 			ctx.res.statusCode = 404	
-			ctx.res.end('Not Found')	
-			return;			   
+			meta_title = "Whoops We Can't Find That Article | Proper Noun"
+	    	meta_desc = "Looks like the article you're looking for doesn't exist here any more. Sorry."
+			return {
+				errorCode,
+				article: data,
+				meta_title: meta_title,
+				meta_desc: meta_desc,
+				url: url				
+			}	    
 		}
-		
-	  	return {	  		
-	  		page: page
-	  	}
+		else{
+			meta_title = await data[0].yoast_meta.yoast_wpseo_title
+	    	meta_desc = await data[0].yoast_meta.yoast_wpseo_metadesc
+			return {
+		    	errorCode,
+			    article: data,
+			    meta_title: meta_title,
+			    meta_desc: meta_desc,
+			    url: url
+			}
+		}	
 
 	}
 
