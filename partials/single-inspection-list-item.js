@@ -1,6 +1,9 @@
+import getConfig from 'next/config'
+const {serverRuntimeConfig, publicRuntimeConfig} = getConfig()
+const axios = require('axios').default;
+
 const InspectionListItem = (props) => {  	
-	
-	
+		
   	function showModal(e){
   		e.preventDefault();
 		//e.target.parentNode.classList.add('active')
@@ -59,12 +62,60 @@ const InspectionListItem = (props) => {
 		setActiveSection(4, e)
 		let imgSrc = e.target.getAttribute('src')
 		// e.target.parentNode.parentNode.parentNode.parentNode
-		e.target.closest('form').querySelectorAll('.single-photo .responsive-img img')[0].src = imgSrc
+		e.target.closest('form').querySelectorAll('.single-photo .responsive-img img')[0].src = imgSrc	
+	}
+
+	function updateInspectionStatus(e){
 		
+		let specific_inspection = e.target.getAttribute('data-specific-inspection')
+		let section_group = e.target.getAttribute('data-section-group')
+		let inspection_block = e.target.getAttribute('data-inspection-block')
+		let inspection_id = e.target.getAttribute('data-inspection-id')
+		let status_value = e.target.value
+
+		let headers = {
+			'Content-type': 'application/json', 
+			'Authorization': 'Bearer ' + props.auth_token 
+		}
+
+		
+		// let propertyId = this.state.propertyId				
+		let fieldUpdateUrl = publicRuntimeConfig.acf_api_base + '/property_inspections/' + inspection_id
+		let inspectionUpdateData = {
+			"fields": {
+				[section_group]: {
+					[specific_inspection]: {
+						[inspection_block]: status_value
+					}
+				}
+			}		
+		}
+
+		// let inspectionUpdateData = {"fields": ""}
+
+		// console.log(inspectionUpdateData)
+		// inspectionUpdateData["fields"]["front_house_common_areas"]["sidewalk_cleanliness"]["status"] =	status_value
+		
+
+		axios.post(fieldUpdateUrl, inspectionUpdateData, {
+			headers: headers
+		})
+		.then(data => {
+			console.log(data)
+			document.querySelectorAll('.inspection-list-item-wrap.' + specific_inspection + ' .status-icon')[0].classList.remove('todo')
+			document.querySelectorAll('.inspection-list-item-wrap.' + specific_inspection + ' .status-icon')[0].classList.add('complete')
+			
+			// this.setState({
+			// 	loadingWindowMessage: "Redirecting to Inspection"
+			// })
+			// setTimeout(() => {
+			// 	Router.push('/inspection/' + newInspectionSlug)						
+			// }, 1000)
+		})
 	}
 
 	return(
-		<div className="inspection-list-item-wrap">
+		<div className={`inspection-list-item-wrap ${props.specificInspection}`}>
 			<button type="button" className="inspection-list-item" onClick={e => showModal(e)}>
 				<span className={`status-icon ${props.taskStatus}`}>
 					
@@ -84,41 +135,41 @@ const InspectionListItem = (props) => {
 			<div className="inspection-list-item-form">				
 				<a onClick={e => hideModal(e)} className="close">x</a>
 				<h3 className="topmargin-8">{props.title}</h3>
-				<form>
+				<form id={props.sectionGroup}>					
 					<span className="section-1 form-section active ratings">
 						<div className="checkboxes-right">
 							<label className="circle-checkbox">
 								Good
 								{props.status == 'good' ? 
-									<input className="radio" type="radio" name="rating" value="good" defaultChecked />
+									<input className="radio inspection_rating" type="radio" data-inspection-id={props.inspectionId} data-section-group={`${props.sectionGroup}`} data-specific-inspection={`${props.specificInspection}`} data-inspection-block="status" name="inspection_rating" value="good" onChange={updateInspectionStatus} defaultChecked />
 								:
-									<input className="radio" type="radio" name="rating" value="good"  /> 
+									<input className="radio inspection_rating" type="radio" data-inspection-id={props.inspectionId} data-section-group={`${props.sectionGroup}`} data-specific-inspection={`${props.specificInspection}`} data-inspection-block="status" name="inspection_rating" value="good" onChange={updateInspectionStatus}  /> 
 								}								
 								
 							</label>	
 							<label className="circle-checkbox">
 								Fair
 								{props.status == 'fair' ? 
-									<input className="radio" type="radio" name="rating" value="fair" defaultChecked />
+									<input className="radio inspection_rating" type="radio" data-inspection-id={props.inspectionId} data-section-group={`${props.sectionGroup}`} data-specific-inspection={`${props.specificInspection}`} data-inspection-block="status" name="inspection_rating" value="fair" defaultChecked onChange={updateInspectionStatus} />
 								:
-									<input className="radio" type="radio" name="rating" value="fair"  /> 
+									<input className="radio inspection_rating" type="radio" data-inspection-id={props.inspectionId} data-section-group={`${props.sectionGroup}`} data-specific-inspection={`${props.specificInspection}`} data-inspection-block="status" name="inspection_rating" value="fair" onChange={updateInspectionStatus}  /> 
 								}
 							</label>	
 							<label className="circle-checkbox">
 								Poor
 								{props.status == 'poor' ? 
-									<input className="radio" type="radio" name="rating" value="poor" defaultChecked />
+									<input className="radio inspection_rating" type="radio" data-inspection-id={props.inspectionId} data-section-group={`${props.sectionGroup}`} data-specific-inspection={`${props.specificInspection}`} data-inspection-block="status" name="inspection_rating" onChange={updateInspectionStatus} value="poor" defaultChecked />
 								:
-									<input className="radio" type="radio" name="rating" value="poor"  /> 
+									<input className="radio inspection_rating" type="radio" data-inspection-id={props.inspectionId} data-section-group={`${props.sectionGroup}`} data-specific-inspection={`${props.specificInspection}`} data-inspection-block="status" name="inspection_rating" onChange={updateInspectionStatus} value="poor"  /> 
 								}
 							</label>	
 
 							<label className="circle-checkbox">
 								Not Applicable
 								{props.status == 'na' ? 
-									<input className="radio" type="radio" name="rating" value="na" defaultChecked />
+									<input className="radio inspection_rating" type="radio" data-inspection-id={props.inspectionId} data-section-group={`${props.sectionGroup}`} data-specific-inspection={`${props.specificInspection}`} data-inspection-block="status" name="inspection_rating" onChange={updateInspectionStatus} value="na" defaultChecked />
 								:
-									<input className="radio" type="radio" name="rating" value="na"  /> 
+									<input className="radio inspection_rating" type="radio" data-inspection-id={props.inspectionId} data-section-group={`${props.sectionGroup}`} data-specific-inspection={`${props.specificInspection}`} data-inspection-block="status" name="inspection_rating" onChange={updateInspectionStatus} value="na"  /> 
 								}								
 							</label>	
 						</div>
@@ -141,7 +192,7 @@ const InspectionListItem = (props) => {
 					<span className="section-2 form-section notes">
 						<div className="container">
 							<div className="textarea-contain">
-								<textarea name="inspection-notes" id="" cols="30" rows="10" placeholder="Add A Note..."></textarea>								
+								<textarea data-inspection-id={props.inspectionId} data-update-val={`${props.sectionGroup}_${props.specificInspection}_notes`} name="inspection-notes" id="" cols="30" rows="10" placeholder="Add A Note..."></textarea>								
 							</div>
 							<div className="text-center topmargin-3">
 								<button className="button primary full-width" type="button" onClick={e => addNewNote(e)}>Add Inspection Note</button>

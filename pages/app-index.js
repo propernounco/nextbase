@@ -11,7 +11,18 @@ import TileLink from '../partials/tile-link.js'
 const Entities = require('html-entities').AllHtmlEntities;
 const entities = new Entities();
 
-class HomePage extends React.Component {	
+
+class HomePage extends React.Component {		
+	constructor(props) {
+	    super(props)	    
+	    this.state = { 
+	    	isEmptyState: true
+	    };
+	}
+
+	componentDidMount(){
+		console.log(this.state)
+	}
 	    
 	render() {
 	

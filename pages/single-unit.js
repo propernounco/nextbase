@@ -23,6 +23,7 @@ class SingleUnit extends React.Component {
 	    	propertyOwner: [],
 	    	singleUnit: [],
 	    	unitTitle: '',
+	    	unitId:'',
 	    	isLoading: true 
 	    };
 	}
@@ -58,15 +59,18 @@ class SingleUnit extends React.Component {
 		fetch(publicRuntimeConfig.api_base + 'property_units?slug=' + this.props.slug)
 			  	.then(res => {					  			  								
 					return res.json()
-
 			  	})			  				  	
-				.then(json => this.setState(
-      				{ 	      					      					
-      					singleUnit: json[0],
-      					unitTitle: json[0].title.rendered,			    
-      					isLoading: false      					
-      				}		      				      				
-      			))
+				.then(json => {
+					console.log(json[0].id)
+					this.setState(
+	      				{ 	      					      					
+	      					singleUnit: json[0],
+	      					unitTitle: json[0].title.rendered,			    
+	      					unitId: json[0].id,
+	      					isLoading: false    					
+	      				}		      				      				
+	      			)
+				})
     }
 	
 	render() {
@@ -87,20 +91,19 @@ class SingleUnit extends React.Component {
 						</div>							
 						:
 						<div>
+							
+							<h1 className="page-title">{this.state.singleUnit.acf.property.post_title}</h1>
+							
 							<PageTitle title={`${this.state.singleUnit.acf.unit_number}`} />												
-							<div className="text-center">
-								<p className="small">{this.state.singleUnit.acf.property.post_title}</p>
-							</div>
+							
 
 							<div className="topmargin-3"></div>															
 							
-							<TileLink href="/unit-inspections" src="properties" text="Unit Inspections" />
+							<TileLink href={`/unit-inspections/${this.state.unitId}`} src="properties" text="Unit Inspections" />
 							
 							<TileLink href="/work-orders" src="work-orders" text="Work Orders" />
 
-							<TileLink href="/new-inspection" src="properties" text="New Inspection" />
-
-							<TileLink href="/new-inspection" src="media" text="Unit Media" />					
+							<TileLink href={`/unit-media/${this.state.unitId}`} src="camera" text="Unit Media" />
 						</div>
 					}																
 				</div>

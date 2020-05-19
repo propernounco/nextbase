@@ -1,8 +1,6 @@
 import React from 'react'
-import getConfig from 'next/config'
-
 import { connect } from 'react-redux'
-
+import getConfig from 'next/config'
 const {serverRuntimeConfig, publicRuntimeConfig} = getConfig()
 
 import Head from 'next/head'

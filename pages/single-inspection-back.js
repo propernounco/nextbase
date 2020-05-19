@@ -88,8 +88,7 @@ class InspectionList extends React.Component {
 			return item.section == inspectionSections[0].slug ;
 		});
 
-		
-
+	
 			store.dispatch(
 	    	{ 
 		    		type: "CURRENT_INSPECTION_SECTION", 

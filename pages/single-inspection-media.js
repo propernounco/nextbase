@@ -18,6 +18,8 @@ import TwoRowListItem from '../partials/two-row-list-item.js'
 import PropertiesDrop from '../partials/properties-drop.js'
 import Modal from '../partials/modal.js'
 
+const axios = require('axios').default;
+
 const Entities = require('html-entities').AllHtmlEntities;
 const entities = new Entities();
 
@@ -31,6 +33,7 @@ class PropertyOwners extends React.Component {
 	    	propertiesLoading: true,
 	    	imagesLoading:true,
 	    	inspectionsLoading:true,
+	    	inspectionTitle: '',
 	    	inspections: {},
 	    	properties: [],
 	    	images: [],
@@ -45,17 +48,14 @@ class PropertyOwners extends React.Component {
 	    	type: "MEDIA_LOADING", 
 	    	payload: true
 	    })
-
-        store.dispatch(
-    		{ 
-	    		type: "DROP_BUTTON_TEXT", 
-	    		payload: 'select a property'
-	    	}	    	
-	    )
+	
+		console.log(req.params.slug)
 
   		return{
-  			propertyId: req.params.id,
-
+  			inspectionId: req.params.slug,
+	    	path: req.url,
+	    	auth_token: req.cookies.tcii_auth_token,
+			user_id: req.cookies.tcii_user_id
   		}
     }
 
@@ -63,54 +63,18 @@ class PropertyOwners extends React.Component {
 	
 	componentDidMount(){
 		
-		fetch(publicRuntimeConfig.api_base + 'properties')
-	 	.then(res => {					  			  								
-			return res.json()
-
-	  	})			  				  	
+		axios.get(publicRuntimeConfig.api_base + 'media?filter[meta_key]=inspection&filter[meta_value]=' + this.props.inspectionId)
 		.then(json => {
-			console.log(json)
-
-			// let selectedProperty = json.filter(json => {
-			// 	// console.log(json.id)	
-			// 	// console.log(this.props.propertyId)
-
-			//   return json.id === parseFloat(this.props.propertyId)
-			// })
-
-
+			console.log(json.data)
+	
 			this.setState({
-				properties: json,	
-				// selectedProperty: selectedProperty,
-				propertiesLoading: false	    			    	
+				inspectionTitle: json.data[0].acf.inspection.post_title
 			})
-
-			// this.props.dispatch(
-	  //   		{ 
-		 //    		type: "SELECTED_PROPERTY", 
-		 //    		payload: selectedProperty[0].id
-		 //    	}	    	
-		 //    )
-		 //    this.props.dispatch(
-	  //   		{ 
-		 //    		type: "DROP_BUTTON_TEXT", 
-		 //    		payload: selectedProperty[0].title.rendered
-		 //    	}	    	
-		 //    )
-		    
-		})
-		
-
-		fetch(publicRuntimeConfig.api_base + 'media')
-	  	.then(res => {					  			  								
-			return res.json()
-	  	})			  				  	
-		.then(json => {
 
 			this.props.dispatch(
 	    		{ 
 		    		type: "CURRENT_IMAGES", 
-		    		payload: json
+		    		payload: json.data
 		    	}	    	
 		    )
 
@@ -121,11 +85,10 @@ class PropertyOwners extends React.Component {
 		    	}	    	
 		    )
 
-			// this.setState({ 	      					      							
-			//     	// images: json,		    	
-			// 		isLoading: false      					
-			// 	})
 		})		
+
+		
+		
 	}
 	
 
@@ -150,15 +113,7 @@ class PropertyOwners extends React.Component {
 					/>
 										
 					<div className="container">				
-						<PageTitle title="Property Media" />				
-						
-						{
-							this.state.propertiesLoading ? 
-							<div className="block-loading"><div className="loader">12313</div></div>
-							:
-							<PropertiesDrop dropClass="property-drop" buttonVal={this.props.dropdowns.dropButtonText} dropItems={this.state.properties} changeFunc="getSelectedPropertyImages" {...this.props}  />
-						}
-										
+						<PageTitle title={this.state.inspectionTitle} />				
 						
 						{
 							this.props.media.mediaLoading ? 
@@ -171,7 +126,7 @@ class PropertyOwners extends React.Component {
 								{
 									this.props.media.currentImages.length > 0 ? 
 									
-										<div className="split-grid media-grid topmargin-3">	
+										<div className="single-grid media-grid topmargin-3">	
 											{
 												this.props.media.currentImages.map(image => 
 													<div className="item" key={image.slug}>

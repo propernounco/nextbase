@@ -13,13 +13,13 @@ const simpleDrop = (props) => {
 	// 	});
 
 	function changeSimpleDropState(e){	
+		e.preventDefault()
 		e.currentTarget.parentNode.querySelectorAll('.bg')[0].classList.toggle('active')
-		e.currentTarget.parentNode.querySelectorAll('.dropdown')[0].classList.toggle('active')
-		
-		
+		e.currentTarget.parentNode.querySelectorAll('.dropdown')[0].classList.toggle('active')	
 	}
 
 	function closeSimpleDrop(e){		
+		e.preventDefault()
 		e.target.parentNode.querySelectorAll('.bg')[0].classList.remove('active')		
 		e.target.parentNode.querySelectorAll('.dropdown')[0].classList.remove('active')		
 	}

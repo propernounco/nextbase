@@ -22,9 +22,13 @@ class SingleEntity extends React.Component {
 	    	singleEntity: {},	
 	    	entityProperty: {},    	
 	    	isLoading: true,
-	    	propertyAddress: '',
-	    	sqFootage: '',
-	    	propertyType: '',
+	    	propertyAddress: 'Loading...',
+	    	sqFootage: 'Loading...',
+	    	propertyType: 'Loading...',
+	    	entityPropertyAddress: 'Loading...',
+			entityPropertySqFootage: 'Loading...',
+			entityPropertyType: 'Loading...',
+			entityPropertyUnits: 'Loading...',
 	    	unitCount: 0
 	    };
 	}

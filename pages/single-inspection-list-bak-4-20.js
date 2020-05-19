@@ -32,19 +32,17 @@ class InspectionList extends React.Component {
 	    	inspectionSections:[],
 	    	allListSectionQuestions: [],
 	    	propertyTitle: '',
-	    	inspectionId: '',
 	    	isLoading: true,
 
 	    };
 	}
 
-	static async getInitialProps({ store, isServer, pathname, query, asPath, req, res }) {	
+	static async getInitialProps({ store, isServer, pathname, query, asPath, req, res }) {
+	
 	    return{
 	    	slug: req.params.slug,
-	    	path: req.url,
-	    	auth_token: req.cookies.tcii_auth_token,
-			user_id: req.cookies.tcii_user_id
-	    }	    
+	    	path: req.url
+	    }
 	}
 
 	componentDidMount(){
@@ -60,25 +58,29 @@ class InspectionList extends React.Component {
 	  	})		
 	  	.then(json => {
 	  		
-			
-			let fieldGroupData = json[0].acf	
-			let inspectionId = json[0].id
+
+			let fieldGroupData = json[0].acf			
 		
 			this.setState({
-				propertyTitle: fieldGroupData.inspection_property.post_title,
-				inspectionId: inspectionId
+				propertyTitle: fieldGroupData.inspection_property.post_title
 			})
 		
 			for(var property in fieldGroupData){
-						
-				if(!property.includes('inspect')){				
+			
+				
+
+				if(property.includes('inspect')){				
 					test++;			
 			
+					console.log(property)
+
 					inspectionSections.push({
 						title: property.replace(/_/g, ' '),
 						slug: property
 					})
 
+					console.log(inspectionSections)
+									
 					for(var section_question in fieldGroupData[property]){					
 
 						let questionData = {
@@ -90,7 +92,8 @@ class InspectionList extends React.Component {
 						
 						allListItems.push(questionData)	
 										
-					}								
+					}
+								
 				}
 			}
 
@@ -189,8 +192,8 @@ class InspectionList extends React.Component {
 											<DownCaret />
 										</div>
 									</button>
-									<div onClick={closeSidebar} className={`bg ${this.props.dropdowns.dropdownStatus}`}></div>
-									<div className={`sidebar-nav ${this.props.dropdowns.dropdownStatus}`}>
+									<div onClick={closeSidebar} className={`bg ${this.props.navigation.dropdownStatus}`}></div>
+									<div className={`sidebar-nav ${this.props.navigation.dropdownStatus}`}>
 										<div className="dropdown-title">
 											<span>Property Inspection Items</span>
 										</div>
@@ -201,8 +204,7 @@ class InspectionList extends React.Component {
 								<div className="inspection-list-container white-tile">			
 									{																
 										this.props.inspections.currentInspectionSectionFields.map(
-											listItem => {					
-
+											listItem => {										
 												let taskStatus = 'todo';
 												if(listItem.status != ''){
 													taskStatus = 'complete';	
@@ -210,7 +212,7 @@ class InspectionList extends React.Component {
 												// console.log(listItem.name)
 												
 												return (
-													<InspectionListItem {...this.props} status={listItem.status} taskStatus={taskStatus} title={listItem.label} sectionGroup={listItem.section} specificInspection={listItem.name} inspectionId={this.state.inspectionId} key={listItem.name} />
+													<InspectionListItem {...this.props} status={listItem.status} taskStatus={taskStatus} title={listItem.label} key={listItem.name} />
 												)
 											}
 										)								

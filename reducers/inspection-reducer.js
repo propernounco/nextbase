@@ -15,7 +15,11 @@ const inspectionReducer = (state = '', {type, payload}) => {
         case 'SHOW_ITEM_FORM':
         	return {...state, listItems: payload};        	
         case 'HIDE_ITEM_FORM':
-        	return {...state, listItems: payload};        		
+        	return {...state, listItems: payload};       
+        case 'INSPECTION_LIST':
+            return {...state, inspectionList: payload};
+        case 'INSPECTION_LIST_LOADING':
+            return {...state, inspectionListLoading: payload};
         default:
             return state
     }

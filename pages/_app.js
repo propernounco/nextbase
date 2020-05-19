@@ -11,12 +11,18 @@ import dropdownReducer from '../reducers/dropdown-reducers'
 import inspectionReducer from '../reducers/inspection-reducer'
 import formReducer from '../reducers/form-reducers'
 import workOrderReducer from '../reducers/work-order-reducer'
+import mediaReducer from '../reducers/media-reducer'
+import loadingReducer from '../reducers/loading-reducers'
+
+import LoadingWindow from '../partials/loading-window'
 
 const allReducers = combineReducers({
-    navigation: dropdownReducer,
+    dropdowns: dropdownReducer,
     inspections: inspectionReducer,
     forms: formReducer,
-    workOrders: workOrderReducer
+    workOrders: workOrderReducer,
+    loadingWindow: loadingReducer,
+    media: mediaReducer
 })
 
 
@@ -33,7 +39,8 @@ const initialState = {
   dropdowns: '',
   inspections: '',
   forms: '',
-  workOrders:''
+  workOrders:'',
+  loadingWindow: ''
 }
 
 const makeStore = (initialState, options) => {
@@ -46,9 +53,8 @@ class TciiApp extends App {
     
     //let pageProps = {}
 
-    // ctx.store.dispatch({type: 'FOO', payload: 'foo'});
+    // ctx.store.dispatch({type: 'FOO', payload: 'foo'});   
 
-    
     const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
     
 
@@ -64,7 +70,7 @@ class TciiApp extends App {
            
           <Provider store={store}>           
               <PageTransition timeout={300} classNames="page-transition">
-                <Component {...pageProps} key={router.route} />                     
+                <Component {...pageProps} key={router.route} />                
               </PageTransition>          
               <style jsx global>{`
                 .page-transition-enter {

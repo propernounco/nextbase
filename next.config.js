@@ -27,6 +27,8 @@ const globals = {
   publicRuntimeConfig: { // Will be available on both server and client
     staticFolder: '/static',
     api_base: base_cms_url + '/wp-json/wp/v2/',
+    custom_api_base: base_cms_url + '/wp-json/tcii/v1/',
+    acf_api_base: base_cms_url + '/wp-json/acf/v3',
     json_section_base: base_cms_url + '/wp-content/themes/tciicms/acf-json/'    
   },
   webpack(config) {

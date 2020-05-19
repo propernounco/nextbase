@@ -58,6 +58,7 @@ class SingleInspection extends React.Component {
 		return {
 			path: req.url,
 			slug: req.params.slug,
+			unitId: req.params.slug,
 			user_id: req.cookies.tcii_user_id,
 			auth_token: req.cookies.tcii_auth_token,
 			headers: {
@@ -69,7 +70,7 @@ class SingleInspection extends React.Component {
 	}
 
 	componentDidMount(){
-		
+		// fetch(publicRuntimeConfig.api_base + 'property_inspections?filter[meta_key]=inspection_unit&filter[meta_value]=' + this.props.slug)		
 		fetch(publicRuntimeConfig.api_base + 'property_inspections?slug=' + this.props.slug)
 			  	.then(res => {					  			  													
 					return res.json()

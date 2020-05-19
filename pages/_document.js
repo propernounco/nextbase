@@ -7,7 +7,7 @@ import Header from '../partials/header.js'
 import Footer from '../partials/footer.js'
 import fetch from 'isomorphic-unfetch'
 
-
+import LoadingWindow from '../partials/loading-window'
 
 export default class TciiApp extends Document {
 
@@ -76,6 +76,7 @@ export default class TciiApp extends Document {
         <Main />
         <NextScript />
         <Footer />
+       
       </div>              
                   
       <script defer src="/static/dist/js/tciiapp-js.dist.js"></script>

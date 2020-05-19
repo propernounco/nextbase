@@ -6,6 +6,10 @@ const mediaReducer = (state = '', {type, payload}) => {
             return {...state, assignedEmployee: payload};       		
         case 'WORK_ORDER_STATUS':
             return {...state, workOrderStatus: payload};                   
+        case 'MEDIA_LOADING':
+            return {...state, mediaLoading: payload};                       
+        case 'CURRENT_IMAGES':
+            return {...state, currentImages: payload};                       
         default:
             return state
     }

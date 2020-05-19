@@ -23,6 +23,21 @@
 	}
 }
 
+.ui-select{
+  appearance:none;
+  border:1px solid #e0e0e0;
+  display: block;
+  height:48px;
+  padding:0 12px;
+  border-radius:4px;
+  outline:0;
+  background:#fff;
+  width: 100%;
+  background-image:url('../images/chevron-down.svg');
+  background-size:15px 15px;
+  background-repeat: no-repeat;
+  background-position: 95% center; 
+}
 .ui-input{
   border-radius:3px;
   box-shadow:0 2px 4px rgba(#000, .06);

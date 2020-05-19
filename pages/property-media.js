@@ -5,6 +5,8 @@ import React from 'react'
 import getConfig from 'next/config'
 const {serverRuntimeConfig, publicRuntimeConfig} = getConfig()
 
+import { connect } from 'react-redux'
+
 import Head from 'next/head'
 
 import Meta from '../partials/seo-meta.js'
@@ -31,18 +33,26 @@ class PropertyOwners extends React.Component {
 	    	inspectionsLoading:true,
 	    	inspections: {},
 	    	properties: [],
-	    	images: []
+	    	images: [],
+	    	selectedProperty: false
 	    };
+	    // this.getSelectedPropertyImages = this.getSelectedPropertyImages.bind(this)
 	}
-
 	
-	static async getInitialProps({store, isServer, pathname, query, asPath, req, res}) {
-      
+	static async getInitialProps({store, isServer, pathname, query, asPath, req, res}) {      
+  		
+		store.dispatch({ 
+	    	type: "MEDIA_LOADING", 
+	    	payload: true
+	    })
+
   		return{
   			propertyId: req.params.id,
 
   		}
     }
+
+    
 	
 	componentDidMount(){
 		
@@ -51,31 +61,74 @@ class PropertyOwners extends React.Component {
 			return res.json()
 
 	  	})			  				  	
-		.then(json => this.setState({
+		.then(json => {
+			console.log(json)
+
+			let selectedProperty = json.filter(json => {
+				// console.log(json.id)	
+				// console.log(this.props.propertyId)
+
+			  return json.id === parseFloat(this.props.propertyId)
+			})
+
+
+			this.setState({
 				properties: json,	
+				selectedProperty: selectedProperty,
 				propertiesLoading: false	    			    	
 			})
-		)
+
+			this.props.dispatch(
+	    		{ 
+		    		type: "SELECTED_PROPERTY", 
+		    		payload: selectedProperty[0].id
+		    	}	    	
+		    )
+		    this.props.dispatch(
+	    		{ 
+		    		type: "DROP_BUTTON_TEXT", 
+		    		payload: selectedProperty[0].title.rendered
+		    	}	    	
+		    )
+		    
+		})
 		
 
 		fetch(publicRuntimeConfig.api_base + 'media?filter[meta_key]=property&filter[meta_value]=' + this.props.propertyId)
 	  	.then(res => {					  			  								
 			return res.json()
 	  	})			  				  	
-		.then(json => this.setState(
-			{ 	      					      							
-		    	images: json,		    	
-				isLoading: false      					
-			}		      				      				
-		))		
-	}
+		.then(json => {
 
+			this.props.dispatch(
+	    		{ 
+		    		type: "CURRENT_IMAGES", 
+		    		payload: json
+		    	}	    	
+		    )
+
+		    this.props.dispatch(
+	    		{ 
+		    		type: "MEDIA_LOADING", 
+		    		payload: false
+		    	}	    	
+		    )
+
+			// this.setState({ 	      					      							
+			//     	// images: json,		    	
+			// 		isLoading: false      					
+			// 	})
+		})		
+	}
+	
 
 	render() {
 		
 		// const setOwnerState = () => this.props.dispatch({ type: 'property_owner',
 		// 		payload: 'ahhhhh' });
-	
+		
+		console.log(this.state)
+
 		function setModalImage(image){
 			let modalImageContainer = document.getElementById('modal-image-container')
 			modalImageContainer.innerHTML = '';
@@ -96,25 +149,37 @@ class PropertyOwners extends React.Component {
 							this.state.propertiesLoading ? 
 							<div className="block-loading"><div className="loader">12313</div></div>
 							:
-							<PropertiesDrop dropClass="property-drop" buttonVal="Kirkman Oaks" dropItems={this.state.properties} {...this.props}  />
+							<PropertiesDrop dropClass="property-drop" buttonVal={this.props.dropdowns.dropButtonText} dropItems={this.state.properties} changeFunc="getSelectedPropertyImages" {...this.props}  />
 						}
 										
 						
 						{
-							this.props.isLoading ? 
+							this.props.media.mediaLoading ? 
 							<div className="block-loading">
 								<div className="loader"></div>
 							</div>
 							:
-							<div className="split-grid media-grid topmargin-3">										
-							{
-								this.state.images.map(image => 
-									<div className="item" key={image.slug}>
-										<img src={`${image.guid.rendered}`} alt="Image" onClick={() => setModalImage(image)} />
-									</div>						
-								)								
-							}								
-							</div>
+							
+							<div className="property-media-block">
+								{
+									this.props.media.currentImages.length > 0 ? 
+									
+										<div className="split-grid media-grid topmargin-3">	
+											{
+												this.props.media.currentImages.map(image => 
+													<div className="item" key={image.slug}>
+														<img src={`${image.source_url}`} alt="Image" onClick={() => setModalImage(image)} />
+													</div>						
+												)	
+											}
+										</div>
+									:
+
+									<div className="card topmargin-3">
+										Sorry no images
+									</div>
+								}
+							</div>							
 						}						
 					</div>			
 
@@ -125,5 +190,4 @@ class PropertyOwners extends React.Component {
 	}
 }
 
-
-export default PropertyOwners
+export default connect(state => state)(PropertyOwners);

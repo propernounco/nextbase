@@ -46,13 +46,6 @@ class PropertyOwners extends React.Component {
 	    	payload: true
 	    })
 
-        store.dispatch(
-    		{ 
-	    		type: "DROP_BUTTON_TEXT", 
-	    		payload: 'select a property'
-	    	}	    	
-	    )
-
   		return{
   			propertyId: req.params.id,
 
@@ -71,41 +64,32 @@ class PropertyOwners extends React.Component {
 		.then(json => {
 			console.log(json)
 
-			// let selectedProperty = json.filter(json => {
-			// 	// console.log(json.id)	
-			// 	// console.log(this.props.propertyId)
+			let selectedProperty = json.filter(json => {
+				// console.log(json.id)	
+				// console.log(this.props.propertyId)
 
-			//   return json.id === parseFloat(this.props.propertyId)
-			// })
+			  return json.id === parseFloat(this.props.propertyId)
+			})
 
 
 			this.setState({
 				properties: json,	
-				// selectedProperty: selectedProperty,
+				selectedProperty: selectedProperty,
 				propertiesLoading: false	    			    	
 			})
 
-			// this.props.dispatch(
-	  //   		{ 
-		 //    		type: "SELECTED_PROPERTY", 
-		 //    		payload: selectedProperty[0].id
-		 //    	}	    	
-		 //    )
-		 //    this.props.dispatch(
-	  //   		{ 
-		 //    		type: "DROP_BUTTON_TEXT", 
-		 //    		payload: selectedProperty[0].title.rendered
-		 //    	}	    	
-		 //    )
+			
 		    
 		})
 		
 
-		fetch(publicRuntimeConfig.api_base + 'media')
+		fetch(publicRuntimeConfig.api_base + 'media?filter[meta_key]=unit&filter[meta_value]=' + this.props.propertyId)
 	  	.then(res => {					  			  								
 			return res.json()
 	  	})			  				  	
 		.then(json => {
+
+			console.log(json)
 
 			this.props.dispatch(
 	    		{ 
@@ -150,14 +134,7 @@ class PropertyOwners extends React.Component {
 					/>
 										
 					<div className="container">				
-						<PageTitle title="Property Media" />				
-						
-						{
-							this.state.propertiesLoading ? 
-							<div className="block-loading"><div className="loader">12313</div></div>
-							:
-							<PropertiesDrop dropClass="property-drop" buttonVal={this.props.dropdowns.dropButtonText} dropItems={this.state.properties} changeFunc="getSelectedPropertyImages" {...this.props}  />
-						}
+						<PageTitle title="Unit Media" />				
 										
 						
 						{

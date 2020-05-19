@@ -31,24 +31,7 @@ class PropertyUnits extends React.Component {
 	}
 
 	static async getInitialProps({store, isServer, pathname, query, asPath, req, res}) {
-                
-		// const request = await fetch(serverRuntimeConfig.api_base + 'property_units?filter[meta_key]=property&filter[meta_value]=' + req.params.id)	   
-	 //    const errorCode = request.statusCode > 200 ? request.statusCode : false;
-	 //    const units = await request.json(); 
-
-		// if(units.length <= 0){
-			
-		// }
-		// else{
-		// 	console.log(units)			
-		// 	return {
-		//     	errorCode,
-		// 	    units: units,
-		// 	    areUnits: true,
-		// 	    propertyId: req.params.id			    
-		// 	}
-		// }	
-
+       
 		return {
 			propertyId: req.params.id	
 		}
@@ -92,7 +75,6 @@ class PropertyUnits extends React.Component {
 										
 					<div className="container">				
 						<PageTitle title={this.state.propertyName} />				
-						<PageSearch placeholder="Property Owners" />	
 						
 						<div className="white-tile property-owners-list list topmargin-2">			
 

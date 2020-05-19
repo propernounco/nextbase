@@ -1,6 +1,3 @@
-// server.get('/articles/:slug', (req, res) => {
-//   return app.render(req, res, '/articles', { slug: req.params.slug });
-// });
 const LRUCache = require('lru-cache');
 
 const express = require('express')
@@ -14,9 +11,14 @@ const connect = require('connect');
 const request = require('request');
 
 // const formidableMiddleware = require('express-formidable');
+const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const multer  = require('multer');
 let upload = multer()
+
+const apiBase = 'https://tciiapp.propernoun.co/wp-json/wp/v2/';
+
+const axios = require('axios').default;
 
 const robotsOptions = {
   root: __dirname + '/static/',
@@ -35,6 +37,69 @@ const ssrCache = new LRUCache({
     },
     maxAge: 1000 * 60 * 60 * 24 * 30
 });
+
+
+// const setUserIdCookie = (res, email) => {
+//   console.log('starting')
+//   let userData = axios.get(apiBase + 'users/?search=' + email)
+//         .then(data => {                                              
+//           res.cookie('tcii_user_id',data.data.id, { maxAge: 800000, httpOnly: true });
+//           console.log('cookie created successfully');
+          
+//         })                          
+  
+
+// }
+
+const authenticateJWT = (req, res, next) => {
+
+
+    const authCookie = req.cookies.tcii_auth_token
+
+    if(authCookie){
+        console.log('authed')
+        console.log(req.cookies.tcii_auth_email)
+        let userIdCookie = req.cookies.tcii_user_id;
+        let headers = {
+          'Content-type': 'application/json', 
+          'Authorization': 'Bearer ' + authCookie 
+        }
+
+        if (userIdCookie === undefined)
+        {
+          // no: set a new cookie      
+            axios.get(apiBase + 'users/?search=' + req.cookies.tcii_auth_email, {
+              headers: headers
+            })
+              .then(data => { 
+
+                if(!data.data || data.data.length == 0){
+                  res.redirect('/')  
+                }                                          
+                // console.log(data.data[0].id)   
+                res.cookie('tcii_user_id',data.data[0].id, { maxAge: 800000, httpOnly: true });
+                  next()
+              })
+        } 
+        else
+        {
+          // yes, cookie was already present 
+          console.log('cookie exists', userIdCookie);
+          next();
+        }         
+    }
+    else{
+      console.log('not authed')
+      // if(req.path !== '/'){
+      //   res.redirect('/')  
+      // }      
+      next();
+    }
+};
+
+// This will hold the users and authToken related to users
+const authTokens = {};
+
 
 
 app  
@@ -67,6 +132,10 @@ app
     // parse application/json
     server.use(bodyParser.json())
 
+    // To parse cookies from the HTTP Request
+    server.use(cookieParser());
+
+
     server.get('/robots.txt', (req, res) => (
       res.status(200).sendFile('robots.txt', robotsOptions)
     ));
@@ -88,113 +157,155 @@ app
     });
 
     server.get('/static/*', (req, res) => {
-        /* serving _next static content using next.js handler */
+        /* serving _next static content using next.js handler */        
         handle(req, res);
     });
 
    
     //dynamic path example
-    server.get('/owners/:slug', (req, res) => {
+    server.get('/owners/:slug', authenticateJWT, (req, res) => {
       const templatePage = '/single-property-owner'
       const queryParams = { title: req.params.slug }
         app.render(req, res, templatePage, queryParams)      
       // return renderAndCache(req, res, actualPage, queryParams)
     })
 
-    server.get('/entity/:slug', (req, res) => {
+    server.get('/entity/:slug', authenticateJWT, (req, res) => {
       const templatePage = '/single-entity'
       const queryParams = { title: req.params.slug }
         app.render(req, res, templatePage, queryParams)      
       // return renderAndCache(req, res, actualPage, queryParams)
     })
 
-    server.get('/units/:id', (req, res) => {
+    server.get('/units/:id', authenticateJWT, (req, res) => {
       const templatePage = '/property-units'
       const queryParams = { title: req.params.slug }
         app.render(req, res, templatePage, queryParams)      
       // return renderAndCache(req, res, actualPage, queryParams)
     })
 
-    server.get('/unit/:slug', (req, res) => {
+    server.get('/unit/:slug', authenticateJWT, (req, res) => {
       const templatePage = '/single-unit'
       const queryParams = { title: req.params.slug }
         app.render(req, res, templatePage, queryParams)      
       // return renderAndCache(req, res, actualPage, queryParams)
     })
 
-    server.get('/properties/:slug', (req, res) => {
+    server.get('/properties/:slug', authenticateJWT, (req, res) => {
       const templatePage = '/properties'
       const queryParams = { title: req.params.slug }
         app.render(req, res, templatePage, queryParams)      
       // return renderAndCache(req, res, actualPage, queryParams)
     })
 
-    server.get('/property/:slug', (req, res) => {
+    server.get('/property/:slug', authenticateJWT, (req, res) => {
       const templatePage = '/single-property'
       const queryParams = { title: req.params.slug }
         app.render(req, res, templatePage, queryParams)      
       // return renderAndCache(req, res, actualPage, queryParams)
     })
 
-    server.get('/property/:slug/details', (req, res) => {
+    server.get('/property/:slug/details', authenticateJWT, (req, res) => {
       const templatePage = '/single-property-information'
       const queryParams = { title: req.params.slug }
         app.render(req, res, templatePage, queryParams)      
       // return renderAndCache(req, res, actualPage, queryParams)
     })
 
-    server.get('/inspections/:id', (req, res) => {
+    server.get('/inspections/:id', authenticateJWT, (req, res) => {
       const templatePage = '/property-inspections'
       const queryParams = { title: req.params.slug }
         app.render(req, res, templatePage, queryParams)      
       // return renderAndCache(req, res, actualPage, queryParams)
     })
 
-    server.get('/inspection/:slug', (req, res) => {
+    server.get('/inspection/:slug', authenticateJWT, (req, res) => {
       const templatePage = '/single-inspection'
       const queryParams = { title: req.params.slug }
         app.render(req, res, templatePage, queryParams)      
       // return renderAndCache(req, res, actualPage, queryParams)
     })
 
-    server.get('/inspection/:slug/questions', (req, res) => {
+    server.get('/inspection/:slug/questions', authenticateJWT, (req, res) => {
       const templatePage = '/single-inspection-list'
       const queryParams = { title: req.params.slug }
         app.render(req, res, templatePage, queryParams)      
       // return renderAndCache(req, res, actualPage, queryParams)
     })
+
+    server.get('/inspection/:slug/media', authenticateJWT, (req, res) => {
+      const templatePage = '/single-inspection-media'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('/unit-inspections/:id', authenticateJWT, (req, res) => {
+      const templatePage = '/unit-inspections'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('/unit-inspection/:slug', authenticateJWT, (req, res) => {
+      const templatePage = '/single-unit-inspection'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('/unit-inspection/:slug/questions', authenticateJWT, (req, res) => {
+      const templatePage = '/single-unit-inspection-list'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('/unit-inspection/:slug/media', authenticateJWT, (req, res) => {
+      const templatePage = '/single-unit-inspection-media'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
   
-    server.get('/work-orders/:id', (req, res) => {
+    server.get('/work-orders/:id', authenticateJWT, (req, res) => {
       const templatePage = '/single-property-work-orders'
       const queryParams = { title: req.params.slug }
         app.render(req, res, templatePage, queryParams)      
       // return renderAndCache(req, res, actualPage, queryParams)
     })
 
-    server.get('/work-orders/:slug/details', (req, res) => {
+    server.get('/work-orders/:slug/details', authenticateJWT, (req, res) => {
       const templatePage = '/single-work-order'
       const queryParams = { title: req.params.slug }
         app.render(req, res, templatePage, queryParams)      
       // return renderAndCache(req, res, actualPage, queryParams)
     })
 
-    server.get('/property-media/:id', (req, res) => {
+    server.get('/property-media/:id', authenticateJWT, (req, res) => {
       const templatePage = '/property-media'
       const queryParams = { title: req.params.slug }
         app.render(req, res, templatePage, queryParams)      
       // return renderAndCache(req, res, actualPage, queryParams)
     })
 
-    server.get('*', (req, res) => {
+    server.get('/unit-media/:id', authenticateJWT, (req, res) => {
+      const templatePage = '/unit-media'
+      const queryParams = { title: req.params.slug }
+        app.render(req, res, templatePage, queryParams)      
+      // return renderAndCache(req, res, actualPage, queryParams)
+    })
+
+    server.get('*', authenticateJWT, (req, res) => {
         /* serving page */        
         //If page shouldn't be cached run it here
-        if(req.params[0] == '/articles' || req.params[0] == '/seo-campaign-packages'){          
-          return handle(req, res)        
-        }
-        else{
+        // if(req.params[0] == '/articles' || req.params[0] == '/seo-campaign-packages'){          
+        //   return handle(req, res)        
+        // }
+        // else{
           // return renderAndCache(req, res)
           return handle(req, res)        
-        }
+        // }
 
         
     });

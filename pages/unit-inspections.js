@@ -53,13 +53,13 @@ class PropertyInspections extends React.Component {
 		})
 
 		return {
-			propertyId: req.params.id
+			unitId: req.params.id
 		}
 
     }
 
     componentDidMount(){		
-  		axios.get(publicRuntimeConfig.api_base + 'property_inspections?filter[meta_key]=inspection_property&filter[meta_value]=' + this.props.propertyId)		
+  		axios.get(publicRuntimeConfig.api_base + 'property_inspections?filter[meta_key]=inspection_unit&filter[meta_value]=' + this.props.unitId)		
 			.then(json => {	
 				
 				console.log(json.data[0].acf.inspection_property.post_title)				
@@ -168,7 +168,7 @@ class PropertyInspections extends React.Component {
 										let date = d.toLocaleString('default', { month: 'long' , day:'2-digit', year: 'numeric'});									
 										{
 											return (	
-												<ListItem rowOne={date} href={`/inspection/${inspection.slug}`} key={inspection.slug} />
+												<ListItem rowOne={date} href={`/unit-inspection/${inspection.slug}`} key={inspection.slug} />
 											)
 										}
 									})

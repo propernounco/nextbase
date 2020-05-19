@@ -9,7 +9,7 @@ import Meta from '../partials/seo-meta.js'
 
 import PageTitle from '../partials/page-title.js'
 import PageSearch from '../partials/page-search.js'
-import TwoRowListItem from '../partials/two-row-list-item.js'
+import PropertyListItem from '../partials/property-list-item.js'
 
 const Entities = require('html-entities').AllHtmlEntities;
 const entities = new Entities();
@@ -32,16 +32,20 @@ class Properties extends React.Component {
 	
 	componentDidMount(){
 		fetch(publicRuntimeConfig.api_base  + 'properties')
-			  	.then(res => {					  			  								
-					return res.json()
+	  	.then(res => {					
+	  		console.log(res)  			  								
+			return res.json()
 
-			  	})			  				  	
-				.then(json => this.setState(
-      				{ 	      					      					
-      					properties: json,
-      					isLoading: false      					
-      				}		      				      				
-      			))		
+	  	})			  				  	
+		.then(json => this.setState(
+			{ 	      					      					
+				properties: json,
+				isLoading: false      					
+			}		      				      				
+		))	
+		.then(() => {
+			console.log(this.state)
+		})	
 	}
 
 	render() {
@@ -65,7 +69,7 @@ class Properties extends React.Component {
 							</div>							
 							:	
 							this.state.properties.map( property => (
-										<TwoRowListItem rowOne={property.title.rendered} rowTwo={property.property_address} href={`/property/${property.slug}`} key={property.id} />
+										<PropertyListItem rowOne={property.title.rendered} rowTwo={property.property_address} href={`/property/${property.slug}`} propertyId={property.id} key={property.id} />
 									)
 								)								
 							}
