@@ -33,7 +33,7 @@
   "dependencies": {
     "@svgr/webpack": "^5.1.0",
     "@zeit/next-sass": "^1.0.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "cacheable-response": "^1.10.2",
     "connect": "^3.7.0",
