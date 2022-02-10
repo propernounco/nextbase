@@ -61,7 +61,7 @@
     "next-offline": "^4.0.6",
     "next-page-transitions": "^1.0.0-beta.2",
     "next-redux-wrapper": "^4.0.1",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "nodemon": "^1.19.4",
     "p-map": "^2.1.0",
     "react": "^16.2.0",
